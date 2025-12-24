@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) // We can pass in a command line option!!
     // Create a hint structure for the server
     sockaddr_in server;
     server.sin_family = AF_INET; // AF_INET = IPv4 addresses
-    server.sin_port = htons(54000); // Little to big endian conversion
+    server.sin_port = htons(8080); // Little to big endian conversion
     inet_pton(AF_INET, "127.0.0.1", &server.sin_addr); // Convert from string to byte array
 
     // Socket creation, note that the socket type is datagram

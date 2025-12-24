@@ -44,7 +44,7 @@ int main() {
 	sockaddr_in serverHint;
 	serverHint.sin_addr.S_un.S_addr = ADDR_ANY; // Us any IP address available on the machine
 	serverHint.sin_family = AF_INET; // Address format is IPv4
-	serverHint.sin_port = htons(54000); // Convert from little to big endian
+	serverHint.sin_port = htons(8080); // Convert from little to big endian
 
 	// Try and bind the socket to the IP and port
 	if (bind(in, (sockaddr*)&serverHint, sizeof(serverHint)) == SOCKET_ERROR)
@@ -61,6 +61,7 @@ int main() {
 	int clientLength = sizeof(client); // The size of the client information
 
 	char buf[1024];
+	char bufSend[1024];
 
 	// Enter a loop
 	while (true)
@@ -85,6 +86,13 @@ int main() {
 
 		// Display the message / who sent it
 		cout << "Message recv from " << clientIp << " : " << buf << endl;
+	
+		int bytesOut = sendto(in, bufSend, 1024, 0, (sockaddr*)&client, clientLength);
+		if (bytesOut == SOCKET_ERROR)
+		{
+			cout << "Error sending to client " << WSAGetLastError() << endl;
+			continue;
+		}
 	}
 
 	// Close socket
