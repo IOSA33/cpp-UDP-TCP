@@ -19,6 +19,9 @@ using namespace std;
 
 // Declarations
 std::vector<std::string> splitURL(const std::string& url);
+void sendPage(const std::string& file, std::string& response);
+std::string getMethod(const char arr[], int length);
+void print(const std::string line);
 
 // To compile  "g++ server.cpp -lws2_32 -o server"
 int Server::run() {
@@ -49,7 +52,7 @@ int Server::run() {
     // which connect a socket
     sockaddr_in addr;
     addr.sin_family = AF_INET;
-    addr.sin_port = htons();
+    addr.sin_port = htons(m_port);
     addr.sin_addr.S_un.S_addr = ADDR_ANY;
 
     // Binding the socket
@@ -89,13 +92,11 @@ int Server::run() {
 
             // send() Send back to the client
             std::string response{};
-            redirect("https://www.youtube.com/?app", response);
-            
-            // response.append("HTTP1.1 200 OK\r\n");
-            // response.append("Content-Type: text/html\r\n");
-            // response.append("Content-Length: 46\r\n"); // Length of the HTML content
-            // response.append("\r\n");
-            // response.append("<html><body><h1>Hello, World!</h1></body></html>");
+            // redirect("https://www.youtube.com/?app", response);
+
+            std::string method { getMethod(recvBuf, 1024) };
+            print(method);
+            sendPage("hello", response);
 
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
             if (bytes_sent == SOCKET_ERROR) {
@@ -135,11 +136,36 @@ std::vector<std::string> splitURL(const std::string& url) {
     return res;
 }
 
+std::string getMethod(const char arr[], int length) {
+    std::string method{};
+
+    for (int i { 0 }; i < 5; ++i) {
+        if (arr[i] == ' ') break;
+        
+        method += arr[i];
+    }
+
+    return method;
+}
+
 void redirect(const std::string& url, std::string& response) {
     response.append("HTTP1.1 301 Moved Permanently\r\n");
     response.append("Location:" + url + "\r\n");
+    response.append("\r\n");
 }
 
-void Server::Get(const std::string& path, const auto& lambda) {
+void sendPage(const std::string& file, std::string& response) {
+    response.append("HTTP1.1 200 OK\r\n");
+    response.append("Content-Type: text/html\r\n");
+    response.append("Content-Length: 46\r\n");
+    response.append("\r\n");
+    response.append("<html><body><h1>Hello, World!</h1></body></html>");
+}
+
+void Server::Get(const std::string& path, const std::function<void(const Request&, const Response&)>& lambda) {
     m_routes.insert({path, lambda});
+}
+
+void print(const std::string line) {
+    std::cout << line;
 }

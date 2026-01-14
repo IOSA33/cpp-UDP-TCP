@@ -10,10 +10,13 @@ int main() {
         // Example
         // res.setStatus(404);
         // res.setResponse("example response");
+        // res.redirect(mainpage);
     });
 
     int err { server.run() };
     if (err == 1) {
         std::cout << "Error" << std::endl;
     }
+
+    return 0;
 }
