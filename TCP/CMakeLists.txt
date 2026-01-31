@@ -9,4 +9,4 @@ add_executable(app main.cpp
                    src/Request/Request.cpp
                    src/Response/Response.cpp)
 
-target_link_libraries(app PRIVATE ws2_32)
+target_link_libraries(app PRIVATE ws2_32 stdc++exp)

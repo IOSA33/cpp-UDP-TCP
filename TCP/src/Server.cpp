@@ -9,20 +9,14 @@
 #include "Server.h"
 #include "Request/Request.h"
 #include "Response/Response.h"
+#include <format>
+#include <print>
 
 #pragma comment (lib, "ws2_32.lib");
 
-// Declarations:
-void redirect(const std::string& url, std::string& response);
-void sendPage(const std::string& filePath, std::string& response);
-std::string getMethod(const char arr[]);
-void print(const std::string& line);
-void println(const std::string& line);
-void readHTMLFile(std::string& file, const std::string& path);
-
 using namespace std;
 
-// HTTP server in c++
+// HTTP server in c++, I did my own custom implementation
 // https://itsfuad.medium.com/understanding-http-at-a-low-level-a-developers-guide-with-c-213728d6c41d
 
 // To compile  "g++ server.cpp -lws2_32 -o server"
@@ -95,16 +89,16 @@ int Server::run() {
             // send() Send back to the client
             std::string response{};
 
-            std::string method { getMethod(recvBuf) };
-            println("Method is: " + method);
+            const std::string& method { m_request.getMethod(recvBuf) };
+            std::println("Method is: {}", method);
 
             std::string path { m_request.getPath(recvBuf) };
-            println( "Path is: " + path );
+            std::println("Path is: {}", path);
             
             if (m_response.findRoute(path, m_routes)) {
-                sendPage("../html/test.html", response);
+                m_response.sendPage("../html/test.html", response);
             } else {
-                redirect("https://www.youtube.com/?app", response);
+                m_response.redirect("https://www.youtube.com/?app", response);
             }
             
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
@@ -128,64 +122,11 @@ int Server::run() {
     return 0;
 }
 
-std::string getMethod(const char arr[]) {
-    std::string method{};
-
-    // Longest method is 6 chars so we prevent from checking whole buf
-    for (int i { 0 }; i < 5; ++i) {
-        if (arr[i] == ' ') break;
-        
-        method += arr[i];
-    }
-
-    return method;
-}
-
-void redirect(const std::string& url, std::string& response) {
-    response.append("HTTP1.1 301 Moved Permanently\r\n");
-    response.append("Location:" + url + "\r\n");
-    response.append("\r\n");
-}
-
-void sendPage(const std::string& filePath, std::string& response) {
-    response.append("HTTP1.1 200 OK\r\n");
-    response.append("Content-Type: text/html\r\n");
-    response.append("Content-Length: 46\r\n");
-    response.append("\r\n");
-
-    std::string filestring{};
-    readHTMLFile(filestring, filePath);
-
-    response.append(filestring);
-}
-
 void Server::Get(const std::string& path, const std::function<void(const Request&, const Response&)>& lambda) {
     m_routes.insert({path, lambda});
 }
 
-void print(const std::string& line) {
-    std::cout << line;
-}
 
-void println(const std::string& line) {
-    std::cout << line << '\n';
-}
 
-void readHTMLFile(std::string& file, const std::string& filePath) {
-    const std::string op {"Server.readHTMLFile"};
-    
-    std::ifstream myFile { filePath };
+// Pretty Cool huh :)
 
-    if(!myFile.is_open()) {
-        println(op + "Cannot open a file");
-        return;
-    }
-
-    std::string line{};
-
-    while(std::getline(myFile, line)) {
-        file += line;
-    }
-
-    myFile.close();
-}

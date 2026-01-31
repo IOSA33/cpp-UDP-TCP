@@ -17,6 +17,6 @@ public:
 
     void parser(const char arr[], int length);
     void splitURL(const std::string& url);
-    std::string_view getMethod() const { return m_method; }
+    const std::string& getMethod(const std::string_view buf);
     std::string getPath(const std::string_view buf);
 };

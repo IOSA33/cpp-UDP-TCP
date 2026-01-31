@@ -2,8 +2,9 @@
 #include <string>
 #include <vector>
 
-void Request::parser(const char arr[], int length) {
 
+void Request::parser(const char arr[], int length) {
+    // TODO: Maybe cookie Token getter?
 }
 
 // about/example  :  {"abour", "example"}
@@ -40,3 +41,14 @@ std::string Request::getPath(const std::string_view buf) {
     return path;
 }
 
+const std::string& Request::getMethod(const std::string_view buf) {
+    m_method.clear();
+    // Longest method is 6 chars so we prevent from checking whole buf
+    for (int i { 0 }; i < 5; ++i) {
+        if (buf[i] == ' ') break;
+        
+        m_method += buf[i];
+    }
+
+    return m_method;
+}
