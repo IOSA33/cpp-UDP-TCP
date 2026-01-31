@@ -23,6 +23,7 @@ void Request::splitURL(const std::string& url) {
 std::string Request::getPath(const std::string_view buf) {
     std::string path{};
     
+    // We know that http path is always second, so we do thr check for whitespacec
     short whitespaceAppear{ 0 };
     for (const auto& i : buf) {
         if (i == ' ') {

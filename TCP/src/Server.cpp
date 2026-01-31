@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <fstream>
 #include "Server.h"
 #include "Request/Request.h"
-#include <fstream>
+#include "Response/Response.h"
 
 #pragma comment (lib, "ws2_32.lib");
 
@@ -93,7 +94,6 @@ int Server::run() {
 
             // send() Send back to the client
             std::string response{};
-            // redirect("https://www.youtube.com/?app", response);
 
             std::string method { getMethod(recvBuf) };
             println("Method is: " + method);
@@ -101,7 +101,11 @@ int Server::run() {
             std::string path { m_request.getPath(recvBuf) };
             println( "Path is: " + path );
             
-            sendPage("../html/test.html", response);
+            if (m_response.findRoute(path, m_routes)) {
+                sendPage("../html/test.html", response);
+            } else {
+                redirect("https://www.youtube.com/?app", response);
+            }
             
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
             if (bytes_sent == SOCKET_ERROR) {
