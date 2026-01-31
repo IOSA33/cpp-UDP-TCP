@@ -1,4 +1,4 @@
-# HTTP Library over TLS handshake for your Use
+# HTTPS Library over TLS handshake for your Use
 
 - Using TLS handshake for secure connection
 - Using wepoll
