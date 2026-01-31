@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(app main.cpp
-                   src/Server.cpp)
+                   src/Server.cpp
+                   src/Request/Request.cpp)
 
 target_link_libraries(app PRIVATE ws2_32)
