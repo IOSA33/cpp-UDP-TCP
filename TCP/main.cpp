@@ -1,4 +1,4 @@
-#include <iostream>
+#include <print>
 #include "src/Server.h"
 #include "src/Request/Request.h"
 #include "src/Response/Response.h"
@@ -15,7 +15,7 @@ int main() {
 
     int err { server.run() };
     if (err == 1) {
-        std::cout << "Error" << std::endl;
+        std::println("Error!");
     }
 
     return 0;

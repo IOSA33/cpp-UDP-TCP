@@ -4,3 +4,5 @@
 - Using wepoll
 - Works currently on WinSock2
 - Custom functions
+- Sending HTML files to the client
+- Checking for cookies and Authentication
