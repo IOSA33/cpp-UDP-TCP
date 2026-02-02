@@ -96,9 +96,10 @@ int Server::run() {
             std::println("Path is: {}", path);
             
             if (m_response.findRoute(path, m_routes)) {
-                m_response.sendPage("../html/test.html", response);
+                std::cout << "Response is:" << m_response.returnResponse() << '\n';
+                // m_response.sendPage("../html/test.html", response);
             } else {
-                m_response.redirect("https://www.youtube.com/?app", response);
+                // m_response.redirect("https://www.youtube.com/?app", response);
             }
             
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
@@ -122,7 +123,7 @@ int Server::run() {
     return 0;
 }
 
-void Server::Get(const std::string& path, const std::function<void(const Request&, const Response&)>& lambda) {
+void Server::Get(const std::string& path, const std::function<void(Request&, Response&)>& lambda) {
     m_routes.insert({path, lambda});
 }
 

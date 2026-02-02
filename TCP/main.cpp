@@ -6,16 +6,15 @@
 int main() {
     Server server{ "0.0.0.0" , 6788 };
 
-    server.Get("/redirect", [](const auto& req, const auto& res) -> void {
+    server.Get("/redirect", [](Request& req, Response& res) -> void {
         // Example
-        // res.setStatus(404);
-        // res.setResponse("example response");
-        // res.redirect(mainpage);
+        res.setStatus(200);
+        res.sendPage("../html/test.html");
     });
 
     int err { server.run() };
     if (err == 1) {
-        std::println("Error!");
+        std::println("Error to Start The Server!");
     }
 
     return 0;
