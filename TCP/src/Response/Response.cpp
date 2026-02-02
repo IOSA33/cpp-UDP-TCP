@@ -61,6 +61,9 @@ void Response::redirect(const std::string& url, std::string& response) {
 }
 
 void Response::setStatus(int code) {
+
+    m_response.clear();
+
     if (!(code < 100) && !(code >= 600)) {
         switch (code) {
         case 100:

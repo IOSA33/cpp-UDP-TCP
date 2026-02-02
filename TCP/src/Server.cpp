@@ -96,7 +96,13 @@ int Server::run() {
             std::println("Path is: {}", path);
             
             if (m_response.findRoute(path, m_routes)) {
-                std::cout << "Response is:" << m_response.returnResponse() << '\n';
+                auto it = m_routes.find(path);
+                if (it != m_routes.end()) {
+                    it->second(m_request, m_response);
+                } else {
+                    std::println("Error!");
+                }
+                response = m_response.returnResponse();
                 // m_response.sendPage("../html/test.html", response);
             } else {
                 // m_response.redirect("https://www.youtube.com/?app", response);
