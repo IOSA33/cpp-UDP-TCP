@@ -4,6 +4,7 @@
 #include <map>
 #include <functional>
 #include <string>
+#include <string_view>
 
 class Request;
 
@@ -14,10 +15,12 @@ private:
 public:
     Response() = default;
 
-    bool findRoute(const std::string& path, const std::map<std::string, std::function<void(Request&, Response&)>>& routes) const;
+    void findRouteAndExecute(const std::string& path, const std::map<std::string, std::function<void(Request&, Response&)>>& routes, std::string& responseToClient, Request& request, Response& response);
     void sendPage(const std::string& filePath);
     void readHTMLFile(std::string& file, const std::string& filePath);
-    void redirect(const std::string& url, std::string& response);
+    void redirect(const std::string& url);
     void setStatus(int code);
-    std::string returnResponse() { return m_response; };
+    std::string_view returnResponse() { return m_response; };
+    void setHeader(const std::string& header);
+    void pageNotFound();
 };

@@ -95,18 +95,8 @@ int Server::run() {
             std::string path { m_request.getPath(recvBuf) };
             std::println("Path is: {}", path);
             
-            if (m_response.findRoute(path, m_routes)) {
-                auto it = m_routes.find(path);
-                if (it != m_routes.end()) {
-                    it->second(m_request, m_response);
-                } else {
-                    std::println("Error!");
-                }
-                response = m_response.returnResponse();
-                // m_response.sendPage("../html/test.html", response);
-            } else {
-                // m_response.redirect("https://www.youtube.com/?app", response);
-            }
+            // The Main logic to response Client
+            m_response.findRouteAndExecute(path, m_routes, response, m_request, m_response);
             
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
             if (bytes_sent == SOCKET_ERROR) {
