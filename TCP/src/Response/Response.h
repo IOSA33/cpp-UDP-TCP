@@ -16,11 +16,11 @@ public:
     Response() = default;
 
     void findRouteAndExecute(const std::string& method, const std::string& path, const std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>>& routes, std::string& responseToClient, Request& request, Response& response);
-    void sendPage(const std::string& filePath);
+    void sendFile(const std::string& filePath);
     void readHTMLFile(std::string& file, const std::string& filePath);
     void redirect(const std::string& url);
     void setStatus(int code);
     std::string_view returnResponse() { return m_response; };
-    void setHeader(const std::string& header);
+    void setHeader(const std::string& key, const std::string& value);
     void pageNotFound();
 };

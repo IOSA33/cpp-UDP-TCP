@@ -5,6 +5,7 @@
 #include <fstream>
 #include <print>
 #include <format>
+#include <algorithm>
 #include "Response.h"
 #include "../Request/Request.h"
 
@@ -32,20 +33,25 @@ void Response::findRouteAndExecute(
     responseToClient = response.returnResponse();
 }
 
-void Response::sendPage(const std::string& filePath) {
-    m_response.append("Content-Type: text/html\r\n");
+void Response::sendFile(const std::string& filePath) {
+    std::string content_type {};
+    std::string file_extension { filePath.substr(filePath.find_last_of('.') + 1) };
+
+    if (file_extension == "html") 
+        content_type = "text/html";
+
+    else if (file_extension == "json") 
+        content_type = "application/json";
 
     std::string filestring{};
     readHTMLFile(filestring, filePath);    
 
     // C++20
-    m_response.append(std::format("Content-Length: {}\r\n", filestring.size()));
-    // response.append("Content-Length: " + std::to_string(filestring.size()) + "\r\n");
-    m_response.append("\r\n");
-
+    setHeader("Content-Type", content_type);
+    m_response.append(std::format("Content-Length: {}", filestring.size()));
+    m_response.append("\r\n\r\n");
 
     m_response.append(filestring);
-    m_response.append("\r\n");
 }
 
 void Response::readHTMLFile(std::string& file, const std::string& filePath) {
@@ -117,8 +123,8 @@ void Response::setStatus(int code) {
     }
 }
 
-void Response::setHeader(const std::string& header) {
-    m_response.append(std::format("Content-Type: {}", header));
+void Response::setHeader(const std::string& key, const std::string& value) {
+    m_response += key + ": " + value + "\r\n";
 }
 
 void Response::pageNotFound() {

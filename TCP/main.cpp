@@ -6,19 +6,15 @@
 int main() {
     Server server{ "0.0.0.0" , 6788 };
 
-    server.Get("/redirect", [](Request& req, Response& res) -> void {
+    server.Get("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
-        res.sendPage("../html/test.html");
+        res.sendFile("../html/test.html");
     });
 
-    // server.Post("/redirect", [](Request& req, Response& res) -> void {
-    //     // Example
-    //     res.setStatus(200);
-    //     res.sendPage("../html/test.html");
-    // });
-
-
-
+    server.Get("/jsontest", [](Request& req, Response& res) -> void {
+        res.setStatus(200);
+        res.sendFile("../html/test.json");
+    });
 
     int err { server.run() };
     if (err == 1) {

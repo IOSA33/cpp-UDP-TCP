@@ -98,7 +98,7 @@ int Server::run() {
             
             // The Main logic to response Client
             m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);
-            
+
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
             if (bytes_sent == SOCKET_ERROR) {
                 // If sending fails, print an error
@@ -124,6 +124,17 @@ void Server::Get(const std::string& path, const std::function<void(Request&, Res
     m_routes["GET"][path] = std::make_pair(path, lambda);
 }
 
+void Server::Post(const std::string& path, const std::function<void(Request&, Response&)>& lambda) {
+    m_routes["POST"][path] = std::make_pair(path, lambda);
+}
+
+void Server::Delete(const std::string& path, const std::function<void(Request&, Response&)>& lambda) {
+    m_routes["DELETE"][path] = std::make_pair(path, lambda);
+}
+
+void Server::Put(const std::string& path, const std::function<void(Request&, Response&)>& lambda) {
+    m_routes["PUT"][path] = std::make_pair(path, lambda);
+}
 
 
 // Pretty Cool huh :)
