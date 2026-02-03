@@ -13,7 +13,10 @@ void Response::findRouteAndExecute(
         const std::string& method,
         const std::string& path, 
         const std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>>& routes,
-        std::string& responseToClient, Request& request, Response& response) {
+        std::string& responseToClient, 
+        Request& request,
+        Response& response
+    ) {
 
     auto method_it { routes.find(method) };
 
@@ -44,17 +47,18 @@ void Response::sendFile(const std::string& filePath) {
         content_type = "application/json";
 
     std::string filestring{};
-    readHTMLFile(filestring, filePath);    
+    readFile(filestring, filePath);    
 
     // C++20
     setHeader("Content-Type", content_type);
-    m_response.append(std::format("Content-Length: {}", filestring.size()));
-    m_response.append("\r\n\r\n");
+    m_response.append(std::format("Content-Length: {}\r\n", filestring.size()));
+    m_response.append("\r\n");
 
     m_response.append(filestring);
+    m_response.append("\r\n");
 }
 
-void Response::readHTMLFile(std::string& file, const std::string& filePath) {
+void Response::readFile(std::string& file, const std::string& filePath) {
     const std::string op {"Server.readHTMLFile"};
     
     std::ifstream myFile { filePath };

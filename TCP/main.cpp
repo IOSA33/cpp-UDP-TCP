@@ -8,9 +8,15 @@ int main() {
 
     server.Get("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
+        // res.setHeader(key, value);
         res.sendFile("../html/test.html");
     });
 
+    server.Post("/htmltest", [](Request& req, Response& res) -> void {
+        res.setStatus(200);
+        res.sendFile("../html/test.json");
+    });
+    
     server.Get("/jsontest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
         res.sendFile("../html/test.json");
