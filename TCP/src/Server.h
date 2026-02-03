@@ -4,6 +4,7 @@
 #include <functional>
 #include <map>
 #include <print>
+#include <utility>
 #include "Request/Request.h"
 #include "Response/Response.h"
 
@@ -11,7 +12,8 @@ class Server {
 private:
     int m_port{};
     std::string m_ip{};
-    std::map<std::string, std::function<void(Request&, Response&)>> m_routes{};
+    // Method, route, origPath, lambda
+    std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>> m_routes;
     Request m_request{};
     Response m_response{};
 
@@ -22,9 +24,9 @@ public:
         }
     int run();
 
-    // Requests
-    void Get(const std::string& path, const std::function<void(Request&, Response&)>& lambda);
-    void Post(const std::string& path, const std::function<void(Request&, Response&)>& lambda);
-    void Delete(const std::string& path, const std::function<void(Request&, Response&)>& lambda);
-    void Updata(const std::string& path, const std::function<void(Request&, Response&)>& lambda);
+    // Methods
+    void Get(const std::string& route, const std::function<void(Request&, Response&)>& lambda);
+    void Post(const std::string& route, const std::function<void(Request&, Response&)>& lambda);
+    void Delete(const std::string& route, const std::function<void(Request&, Response&)>& lambda);
+    void Updata(const std::string& route, const std::function<void(Request&, Response&)>& lambda);
 };

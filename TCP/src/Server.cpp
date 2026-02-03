@@ -11,6 +11,7 @@
 #include "Response/Response.h"
 #include <format>
 #include <print>
+#include <utility>
 
 #pragma comment (lib, "ws2_32.lib");
 
@@ -96,7 +97,7 @@ int Server::run() {
             std::println("Path is: {}", path);
             
             // The Main logic to response Client
-            m_response.findRouteAndExecute(path, m_routes, response, m_request, m_response);
+            m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);
             
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
             if (bytes_sent == SOCKET_ERROR) {
@@ -120,7 +121,7 @@ int Server::run() {
 }
 
 void Server::Get(const std::string& path, const std::function<void(Request&, Response&)>& lambda) {
-    m_routes.insert({path, lambda});
+    m_routes["GET"][path] = std::make_pair(path, lambda);
 }
 
 

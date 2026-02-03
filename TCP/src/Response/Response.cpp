@@ -8,17 +8,26 @@
 #include "Response.h"
 #include "../Request/Request.h"
 
-void Response::findRouteAndExecute(const std::string& path, const std::map<std::string, std::function<void(Request&, Response&)>>& routes, std::string& responseToClient, Request& request, Response& response) {
-    auto it { routes.find(path) };
+void Response::findRouteAndExecute(
+        const std::string& method,
+        const std::string& path, 
+        const std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>>& routes,
+        std::string& responseToClient, Request& request, Response& response) {
 
-    if (it != routes.end()) {
-        std::cout << "Found Route!\n";
-        it->second(request, response);
-        responseToClient = response.returnResponse();
-        return;
+    auto method_it { routes.find(method) };
+
+    if (method_it != routes.end()) {
+        auto path_it { method_it->second.find(path) };
+        if (path_it != method_it->second.end()) {
+            std::cout << "Found Route!\n";
+            path_it->second.second(request, response);
+            responseToClient = response.returnResponse();
+            return;        
+        }
+        std::println("No such Method!");
     }
 
-    std::cout << "Didn't found any Route!\n";
+    std::println("Didn't found any Route!");
     pageNotFound();
     responseToClient = response.returnResponse();
 }
