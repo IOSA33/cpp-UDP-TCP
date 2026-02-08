@@ -99,6 +99,8 @@ int Server::run() {
             // The Main logic to response Client
             m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);
 
+            std::cout << response << '\n'; 
+
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
             if (bytes_sent == SOCKET_ERROR) {
                 // If sending fails, print an error

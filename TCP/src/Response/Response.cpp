@@ -6,6 +6,7 @@
 #include <print>
 #include <format>
 #include <algorithm>
+#include <stdexcept>
 #include "Response.h"
 #include "../Request/Request.h"
 
@@ -38,13 +39,22 @@ void Response::findRouteAndExecute(
 
 void Response::sendFile(const std::string& filePath) {
     std::string content_type {};
-    std::string file_extension { filePath.substr(filePath.find_last_of('.') + 1) };
+ 
+    size_t lastDot = filePath.find_last_of('.');
+ 
+    if (lastDot == std::string::npos) {
+        std::cerr << "Response::sendFile, path is not valid!" << '\n';
+        pageNotFound();
+        return;
+    }
 
-    if (file_extension == "html") 
+    std::string file_extension { filePath.substr(lastDot + 1) };
+
+    if (file_extension == "html"){
         content_type = "text/html";
-
-    else if (file_extension == "json") 
+    } else if (file_extension == "json") {
         content_type = "application/json";
+    }
 
     std::string filestring{};
     readFile(filestring, filePath);    
