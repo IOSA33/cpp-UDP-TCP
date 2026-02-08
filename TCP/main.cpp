@@ -14,7 +14,7 @@ int main() {
 
     server.Post("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
-        res.sendFile("../html/test.json");
+        res.sendFile("../html/htmlPostTest.html");
     });
     
     server.Get("/jsontest", [](Request& req, Response& res) -> void {
