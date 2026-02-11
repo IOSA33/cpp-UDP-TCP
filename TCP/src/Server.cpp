@@ -51,7 +51,7 @@ int Server::run() {
     addr.sin_port = htons(m_port);
     addr.sin_addr.S_un.S_addr = ADDR_ANY;
 
-    // Binding the socket
+    // Binding the socket for the server
     // If bind is okay return 0, else SOCKET_ERROR
     if (bind(in, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
         cout << "Can't bind socket! " << WSAGetLastError() << endl;
