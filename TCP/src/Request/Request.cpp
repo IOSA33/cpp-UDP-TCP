@@ -18,10 +18,10 @@ void Request::parser(const std::string& req) {
             size_t start { cl_it + targetToFind.size() };
             auto end { m_headers.find("\r", start) };
 
-            std::string foundSubStr = m_headers.substr(start, end - start);
+            std::string foundSubStr { m_headers.substr(start, end - start) };
             m_content_length = std::stoul(foundSubStr); 
 
-            std::println("Content Length we found is : {}", m_content_length);
+            std::println("Content Length we found is :{}", m_content_length);
         }
         
         // +4 it means from "\r\n\r\n" and so on

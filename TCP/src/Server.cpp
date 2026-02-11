@@ -96,8 +96,6 @@ int Server::run() {
             std::println("Path is: {}", path);
             
             m_request.parser(recvBuf);
-            // TODO: add new parser
-
             // The Main logic to response Client
             m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);
 
