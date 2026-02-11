@@ -18,7 +18,6 @@
 using namespace std;
 
 // HTTP server in c++, I did my own custom implementation
-// https://itsfuad.medium.com/understanding-http-at-a-low-level-a-developers-guide-with-c-213728d6c41d
 
 // To compile  "g++ server.cpp -lws2_32 -o server"
 int Server::run() {
