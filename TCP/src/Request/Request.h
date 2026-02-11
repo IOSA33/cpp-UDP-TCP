@@ -15,7 +15,7 @@ private:
 public:
     Request() = default;
 
-    void parser(const char arr[], int length);
+    void parser(const std::string& req);
     void splitURL(const std::string& url);
     const std::string& getMethod(const std::string_view buf);
     std::string getPath(const std::string_view buf);

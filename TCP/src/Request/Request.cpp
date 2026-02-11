@@ -1,10 +1,22 @@
 #include "Request.h"
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <print>
 
+void Request::parser(const std::string& req) {
+    auto it = req.find("\r\n\r\n");
 
-void Request::parser(const char arr[], int length) {
-    // TODO: Maybe cookie Token getter?
+    if (it != std::string::npos) {
+        m_method = req.substr(0, it);
+        m_body = req.substr(it);
+
+        // TODO: do something with req
+    } else {
+        std::println("Request::parser, didnt found any body!");
+    }
+
+    return;
 }
 
 // about/example  :  {"abour", "example"}
