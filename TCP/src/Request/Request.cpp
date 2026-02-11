@@ -8,10 +8,28 @@ void Request::parser(const std::string& req) {
     auto it = req.find("\r\n\r\n");
 
     if (it != std::string::npos) {
-        m_method = req.substr(0, it);
-        m_body = req.substr(it);
+        m_headers = req.substr(0, it);
 
+        std::string targetToFind { "Content-Length: " };
+        auto cl_it = m_headers.find(targetToFind);
+
+        if (cl_it != std::string::npos) {
+
+            size_t start { cl_it + targetToFind.size() };
+            auto end { m_headers.find("\r", start) };
+
+            std::string foundSubStr = m_headers.substr(start, end - start);
+            m_content_length = std::stoul(foundSubStr); 
+
+            std::println("Content Length we found is : {}", m_content_length);
+        }
+        
+        // +4 it means from "\r\n\r\n" and so on
+        m_body = req.substr(it + 4);
+        
         // TODO: do something with req
+
+        
     } else {
         std::println("Request::parser, didnt found any body!");
     }

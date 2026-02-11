@@ -95,6 +95,7 @@ int Server::run() {
             std::string path { m_request.getPath(recvBuf) };
             std::println("Path is: {}", path);
             
+            m_request.parser(recvBuf);
             // TODO: add new parser
 
             // The Main logic to response Client
