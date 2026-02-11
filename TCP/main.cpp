@@ -6,9 +6,9 @@
 int main() {
     Server server{ "0.0.0.0" , 6788 };
 
-    server.Use(Middleware::Code::PageNotFound, [](Request& req, Response& res) -> void {
-        res.redirect("https://www.youtube.com");
-    });
+    // server.Use(Middleware::Code::PageNotFound, [](Request& req, Response& res) -> void {
+    //     res.redirect("https://www.youtube.com");
+    // });
 
     server.Get("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(200);

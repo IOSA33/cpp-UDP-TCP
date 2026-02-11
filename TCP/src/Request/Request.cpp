@@ -3,39 +3,39 @@
 #include <vector>
 #include <algorithm>
 #include <print>
+#include <chrono>
 
 void Request::parser(const std::string& req) {
     auto it = req.find("\r\n\r\n");
 
     if (it != std::string::npos) {
-        m_headers = req.substr(0, it);
-
-
-        // TODO: We need to seperate it from basic parser nd if needs to find
-        // something we should caal specific function
-
-        std::string targetToFind { "Content-Length: " };
-        auto cl_it = m_headers.find(targetToFind);
-
-        if (cl_it != std::string::npos) {
-
-            size_t start { cl_it + targetToFind.size() };
-            auto end { m_headers.find("\r", start) };
-
-            std::string foundSubStr { m_headers.substr(start, end - start) };
-            m_content_length = std::stoul(foundSubStr); 
-
-            std::println("Content Length we found is :{}", m_content_length);
-        }
         
+        std::string_view headers = req.substr(req.find("\r\n") + 2, it);
+       
+        while(!headers.empty()) {
+            auto lineEnd { headers.find("\r\n") };
+            if (lineEnd == 0 || lineEnd == std::string::npos) break;
+
+            std::string_view line = headers.substr(0, lineEnd);
+            size_t colomun { line.find(':') };
+            if (colomun != std::string::npos) {
+                std::string_view key { line.substr(0, colomun) };
+                std::string_view value { line.substr(colomun + 1) };
+
+                m_headers.emplace(std::string(key), std::string(value));
+            } else {
+                std::println("Request::parser, Didn't found ':' in the line!");
+            }
+
+            headers.remove_prefix(lineEnd + 2);
+        }
+
         // +4 it means from "\r\n\r\n" and so on
         m_body = req.substr(it + 4);
         
-        // TODO: do something with req
-
-        
     } else {
-        std::println("Request::parser, didnt found any body!");
+        std::println("Request::parser, Didn't found any body!");
+        return;
     }
 
     return;
