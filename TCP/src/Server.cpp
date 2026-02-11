@@ -138,6 +138,10 @@ void Server::Put(const std::string& path, const std::function<void(Request&, Res
     m_routes["PUT"][path] = std::make_pair(path, lambda);
 }
 
+// void Server::Use(const std::function<void(Request&, Response&)>& lambda) {
+
+// }
+
 
 // Pretty Cool huh :)
 
