@@ -10,6 +10,10 @@ void Request::parser(const std::string& req) {
     if (it != std::string::npos) {
         m_headers = req.substr(0, it);
 
+
+        // TODO: We need to seperate it from basic parser nd if needs to find
+        // something we should caal specific function
+
         std::string targetToFind { "Content-Length: " };
         auto cl_it = m_headers.find(targetToFind);
 
