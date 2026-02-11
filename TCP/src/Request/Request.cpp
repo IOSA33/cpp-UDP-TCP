@@ -6,12 +6,14 @@
 #include <chrono>
 
 void Request::parser(const std::string& req) {
+    
+
     auto it = req.find("\r\n\r\n");
 
     if (it != std::string::npos) {
         
         std::string_view headers = req.substr(req.find("\r\n") + 2, it);
-       
+        
         while(!headers.empty()) {
             auto lineEnd { headers.find("\r\n") };
             if (lineEnd == 0 || lineEnd == std::string::npos) break;
