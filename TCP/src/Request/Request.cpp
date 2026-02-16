@@ -4,37 +4,49 @@
 #include <algorithm>
 #include <print>
 #include <chrono>
+#include <iostream>
 
 void Request::parser(const std::string& req) {
-    
-
     auto it = req.find("\r\n\r\n");
 
     if (it != std::string::npos) {
         
-        std::string_view headers = req.substr(req.find("\r\n") + 2, it);
+        std::string headers = req.substr(req.find("\r\n") + 2, it);
         
-        while(!headers.empty()) {
-            auto lineEnd { headers.find("\r\n") };
-            if (lineEnd == 0 || lineEnd == std::string::npos) break;
-
-            std::string_view line = headers.substr(0, lineEnd);
-            size_t colomun { line.find(':') };
-            if (colomun != std::string::npos) {
-                std::string_view key { line.substr(0, colomun) };
-                std::string_view value { line.substr(colomun + 1) };
-
-                m_headers.emplace(std::string(key), std::string(value));
-            } else {
-                std::println("Request::parser, Didn't found ':' in the line!");
+        bool valueBool { false };
+        std::string key {};
+        key.reserve(32);
+        std::string value {};
+        value.reserve(32);
+        
+        for(size_t i { 0 }; i < headers.size(); ++i) {
+            if (headers[i] == '\r') {
+                i += 1;
+                valueBool = false;
+                m_headers.emplace(key, value);
+                key.clear();
+                value.clear();
+                continue;
             }
 
-            headers.remove_prefix(lineEnd + 2);
+            if (headers[i] == ':' &&  headers[i + 1] == ' ') {
+                i += 1;
+                valueBool = true;
+                continue;
+            }
+
+            if (valueBool == false) {
+                key += headers[i];                
+            }
+
+            if (valueBool == true) {
+                value += headers[i];
+            }
         }
 
         // +4 it means from "\r\n\r\n" and so on
         m_body = req.substr(it + 4);
-        
+
     } else {
         std::println("Request::parser, Didn't found any body!");
         return;
@@ -43,6 +55,7 @@ void Request::parser(const std::string& req) {
     return;
 }
 
+// will use it for example url/body/page/{1}/
 // about/example  :  {"abour", "example"}
 void Request::splitURL(const std::string& url) {
     std::string token{};
@@ -87,4 +100,17 @@ const std::string& Request::getMethod(const std::string_view buf) {
     }
 
     return m_method;
+}
+
+std::string Request::getHeader(const std::string& headerToFind) const {
+    auto header_it { m_headers.find(headerToFind) };
+
+    if (header_it != m_headers.end()) {
+        return header_it->second;
+
+    } else {
+        std::println("Request::getHeader, Didn't found such Header: {}", headerToFind);
+    }
+
+    return "";
 }

@@ -13,6 +13,8 @@ int main() {
 
     server.Get("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
+
+        std::println("Host is: {}", req.getHeader("Host"));
         // res.setHeader(key, value);
         res.sendFile("../html/test.html");
     });
