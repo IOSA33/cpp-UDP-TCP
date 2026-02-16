@@ -14,9 +14,6 @@
 #include <utility>
 
 #pragma comment (lib, "ws2_32.lib");
-
-using namespace std;
-
 // HTTP server in c++, I did my own custom implementation
 
 // To compile  "g++ server.cpp -lws2_32 -o server"
@@ -27,21 +24,21 @@ int Server::run() {
     int wsaerr;
     wsaerr = WSAStartup(MAKEWORD(2,2), &wsadata);
     if (wsaerr != 0) {
-        cout << "Winsock dll not found" << endl;
+        std::cout << "Winsock dll not found" << std::endl;
         return 1;
     } else {
-        cout << "winsock DLL Found" << endl;
-        cout << "Status: " << wsadata.szSystemStatus << endl;
+        std::cout << "winsock DLL Found" << std::endl;
+        std::cout << "Status: " << wsadata.szSystemStatus << std::endl;
     }
 
     // Creating a socket
     SOCKET in = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (in == INVALID_SOCKET) {
-        cout << "Error at socket()" << WSAGetLastError() << endl;
+        std::cout << "Error at socket()" << WSAGetLastError() << std::endl;
         WSACleanup();
         return 1;
     } else {
-        cout << "Socket is OK" << endl;
+        std::cout << "Socket is OK" << std::endl;
     }
 
     // SOCKADDR_IN is local endpoint address to 
@@ -54,15 +51,15 @@ int Server::run() {
     // Binding the socket for the server
     // If bind is okay return 0, else SOCKET_ERROR
     if (bind(in, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
-        cout << "Can't bind socket! " << WSAGetLastError() << endl;
+        std::cout << "Can't bind socket! " << WSAGetLastError() << std::endl;
 		return 1;
     }
 
     // Listen on port TCP
     if (listen(in, 1) == SOCKET_ERROR) {
-        cout << "error in listen() : " << WSAGetLastError << endl;
+        std::cout << "error in listen() : " << WSAGetLastError << std::endl;
     } else {
-        cout << "Listen() is OK, I'm waiting for connections..." << endl;
+        std::cout << "Listen() is OK, I'm waiting for connections..." << std::endl;
     }
 
     while (true) {
@@ -70,11 +67,11 @@ int Server::run() {
         SOCKET acceptSocket;
         acceptSocket = accept(in, NULL, NULL);
         if(acceptSocket == INVALID_SOCKET) {
-            cout << "accept failed:" << WSAGetLastError() << endl;
+            std::cout << "accept failed:" << WSAGetLastError() << std::endl;
             WSACleanup();
             return 1;
         } else { 
-            cout << "accept() is working" << endl; 
+            std::cout << "accept() is working" << std::endl; 
         } 
         
         // recv() Receives data from the client
@@ -84,7 +81,7 @@ int Server::run() {
         int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen, 0);
         if (bytesRecv > 0) {
             recvBuf[bytesRecv] = '\0';
-            cout << "Recived from client: \n" << recvBuf << endl;
+            std::cout << "\nRecived from client: \n" << recvBuf << std::endl;
 
             // send() Send back to the client
             std::string response{};
@@ -94,8 +91,19 @@ int Server::run() {
 
             std::string path { m_request.getPath(recvBuf) };
             std::println("Path is: {}", path);
-            
+
             m_request.parser(recvBuf);
+
+            std::string cl { m_request.getHeader("Content-Length") };
+            if (!cl.empty()) {
+                std::stoi(cl);
+                int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen, 0);
+                if (bytesRecv > 0) {
+                    recvBuf[bytesRecv] = '\0';
+                    std::cout << "\nRecived from client: \n" << recvBuf << std::endl;
+                }                
+            }
+            
             // The Main logic to response Client
             m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);
 

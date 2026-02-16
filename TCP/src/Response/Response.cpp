@@ -29,10 +29,10 @@ void Response::findRouteAndExecute(
             responseToClient = response.returnResponse();
             return;        
         }
-        std::println("No such Method!");
+        std::println("No such Route!");
     }
 
-    std::println("Didn't found any Route, using USE middleware!");
+    std::println("Didn't found any Route, using USE Middleware!");
 
     auto middleware_it { routes.find("USE") };
     if (middleware_it != routes.end()) {
@@ -81,12 +81,10 @@ void Response::sendFile(const std::string& filePath) {
 }
 
 void Response::readFile(std::string& file, const std::string& filePath) {
-    const std::string op {"Server.readHTMLFile"};
-    
     std::ifstream myFile { filePath };
 
     if(!myFile.is_open()) {
-        std::println("{}, Cannot open a file", op);
+        std::println("Response::readFile, Cannot open a file");
         return;
     }
 
