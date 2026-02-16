@@ -31,7 +31,7 @@ void Response::findRouteAndExecute(
         std::println("No such Route!");
     }
 
-    std::println("Didn't found any Route, using USE Middleware!");
+    std::println("Response::findRouteAndExecute, Didn't found any Route, using USE Middleware!");
 
     auto middleware_it { routes.find("USE") };
     if (middleware_it != routes.end()) {
@@ -41,7 +41,7 @@ void Response::findRouteAndExecute(
             responseToClient = response.returnResponse();
             return;
         }
-        std::println("No such Method!");
+        std::println("Response::findRouteAndExecute, No such USE Method!");
     }
     
     pageNotFound();

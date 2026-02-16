@@ -100,7 +100,7 @@ int Server::run() {
                 int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen, 0);
                 if (bytesRecv > 0) {
                     recvBuf[bytesRecv] = '\0';
-                    std::cout << "\nRecived from client: \n" << recvBuf << std::endl;
+                    std::print("\nRecived from client:\n{}\n\n", recvBuf);
                 }                
             }
 

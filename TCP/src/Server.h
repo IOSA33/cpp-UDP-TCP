@@ -38,5 +38,4 @@ public:
     void Put(const std::string& route, const std::function<void(Request&, Response&)>& lambda);
     
     void Use(const std::string& path, const std::function<void(Request&, Response&)>& lambda);
-    // void Use(Middleware::Code code, const std::function<void(Request&, Response&)>& lambda);
 };
