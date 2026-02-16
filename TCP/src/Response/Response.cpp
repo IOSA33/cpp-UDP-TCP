@@ -24,7 +24,6 @@ void Response::findRouteAndExecute(
     if (method_it != routes.end()) {
         auto path_it { method_it->second.find(path) };
         if (path_it != method_it->second.end()) {
-            std::cout << "Found Route!\n";
             path_it->second.second(request, response);
             responseToClient = response.returnResponse();
             return;        

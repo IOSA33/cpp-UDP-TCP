@@ -27,8 +27,8 @@ int Server::run() {
         std::cout << "Winsock dll not found" << std::endl;
         return 1;
     } else {
-        std::cout << "winsock DLL Found" << std::endl;
-        std::cout << "Status: " << wsadata.szSystemStatus << std::endl;
+        // std::cout << "winsock DLL Found" << std::endl;
+        // std::cout << "Status: " << wsadata.szSystemStatus << std::endl;
     }
 
     // Creating a socket
@@ -38,7 +38,7 @@ int Server::run() {
         WSACleanup();
         return 1;
     } else {
-        std::cout << "Socket is OK" << std::endl;
+        // std::cout << "Socket is OK" << std::endl;
     }
 
     // SOCKADDR_IN is local endpoint address to 
@@ -103,7 +103,7 @@ int Server::run() {
                     std::cout << "\nRecived from client: \n" << recvBuf << std::endl;
                 }                
             }
-            
+
             // The Main logic to response Client
             m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);
 

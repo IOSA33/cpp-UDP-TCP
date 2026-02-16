@@ -5,13 +5,16 @@
 #include <print>
 #include <chrono>
 #include <iostream>
+#include <string_view>
 
 void Request::parser(const std::string& req) {
+    auto start { std::chrono::steady_clock::now() };
+    
     auto it = req.find("\r\n\r\n");
 
     if (it != std::string::npos) {
         
-        std::string headers = req.substr(req.find("\r\n") + 2, it);
+        std::string_view headers = req.substr(req.find("\r\n") + 2, it);
         
         bool valueBool { false };
         std::string key {};
@@ -38,14 +41,15 @@ void Request::parser(const std::string& req) {
             if (valueBool == false) {
                 key += headers[i];                
             }
-
+ 
             if (valueBool == true) {
                 value += headers[i];
             }
         }
 
-        // +4 it means from "\r\n\r\n" and so on
-        m_body = req.substr(it + 4);
+        auto end { std::chrono::steady_clock::now() };
+        auto duration {std::chrono::duration<double, std::milli>(end - start)};
+        std::println("Time used: {}", duration);
 
     } else {
         std::println("Request::parser, Didn't found any body!");
@@ -72,7 +76,7 @@ void Request::splitURL(const std::string& url) {
 
 std::string Request::getPath(const std::string_view buf) {
     std::string path{};
-    
+    path.reserve(32);
     // We know that http path is always second, so we do thr check for whitespacec
     short whitespaceAppear{ 0 };
     for (const auto& i : buf) {
@@ -92,6 +96,7 @@ std::string Request::getPath(const std::string_view buf) {
 
 const std::string& Request::getMethod(const std::string_view buf) {
     m_method.clear();
+    m_method.reserve(6);
     // Longest method is 6 chars so we prevent from checking whole buf
     for (int i { 0 }; i < 5; ++i) {
         if (buf[i] == ' ') break;
