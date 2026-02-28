@@ -10,6 +10,9 @@
 void Request::parser(const std::string& req) {
     auto start { std::chrono::steady_clock::now() };
     
+    // Clearing up old body request
+    m_body.clear();
+
     auto it = req.find("\r\n\r\n");
 
     if (it != std::string::npos) {
@@ -57,6 +60,14 @@ void Request::parser(const std::string& req) {
     }
 
     return;
+}
+
+void Request::addBody(const std::string& req) {
+    if (!req.empty()) {
+        m_body.append(req);
+    } else {
+        std::println("Request::addBody, req is empty!");
+    }
 }
 
 // will use it for example url/body/page/{1}/
