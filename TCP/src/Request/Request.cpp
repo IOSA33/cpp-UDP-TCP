@@ -8,11 +8,12 @@
 #include <string_view>
 
 void Request::parser(const std::string& req) {
+    // Clearing up old body request and headers
+    m_body.clear();
+    clearHeaders();
+
     auto start { std::chrono::steady_clock::now() };
     
-    // Clearing up old body request
-    m_body.clear();
-
     auto it = req.find("\r\n\r\n");
 
     if (it != std::string::npos) {
@@ -62,9 +63,9 @@ void Request::parser(const std::string& req) {
     return;
 }
 
-void Request::addBody(const std::string& req) {
+void Request::addBody(const std::string& req, const int bytesRecieved) {
     if (!req.empty()) {
-        m_body.append(req);
+        m_body.append(req, bytesRecieved);
     } else {
         std::println("Request::addBody, req is empty!");
     }
@@ -129,4 +130,12 @@ std::string Request::getHeader(const std::string& headerToFind) const {
     }
 
     return "";
+}
+
+void Request::clearHeaders() {
+    if (!m_headers.empty()) {
+        m_headers.clear();
+    } else {
+        std::println("Request::clearHeaders, headers are already empty!");
+    }
 }

@@ -78,7 +78,7 @@ int Server::run() {
         char recvBuf[1024];
         int recvBuflen = sizeof(recvBuf);
 
-        int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen, 0);
+        int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen - 1, 0);
         if (bytesRecv > 0) {
             recvBuf[bytesRecv] = '\0';
 
@@ -95,32 +95,35 @@ int Server::run() {
             std::string path { m_request.getPath(recvBuf) };
             std::println("Path is: {}", path);
 
+            // This parses only headers
             m_request.parser(recvBuf);
 
             // change from no while to while to recv over 1024 bytes  
             std::string cl { m_request.getHeader("Content-Length") };
             if (!cl.empty()) {
                 int clbytes { std::stoi(cl) };
-                std::string bodyrecv{};
 
                 while (clbytes > 0) {
-                    int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen, 0);
-                    
+                    int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen - 1, 0);
+
                     if (bytesRecv > 0) {
                         recvBuf[bytesRecv] = '\0';
                         std::print("\nRecived from client:\n{}\n\n", recvBuf);
+                        // adding one because we doing null terminator
+                        m_request.addBody(recvBuf, bytesRecv);
+                        clbytes -= bytesRecv;
+                    } else {
+                        break;
                     }
-
                 }
+                
             }
-
             // The Main logic to response Client
             m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);
 
-
             // App Logic completes here 
 
-            // TODO: Also check while if we trying to sent over 1024 bytes
+
             int bytes_sent = send(acceptSocket, response.c_str(), response.size(), 0);
             if (bytes_sent == SOCKET_ERROR) {
                 // If sending fails, print an error
