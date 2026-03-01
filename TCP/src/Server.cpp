@@ -98,7 +98,6 @@ int Server::run() {
             // This parses only headers
             m_request.parser(recvBuf);
 
-            // change from no while to while to recv over 1024 bytes  
             std::string cl { m_request.getHeader("Content-Length") };
             if (!cl.empty()) {
                 int clbytes { std::stoi(cl) };
@@ -109,14 +108,12 @@ int Server::run() {
                     if (bytesRecv > 0) {
                         recvBuf[bytesRecv] = '\0';
                         std::print("\nRecived from client:\n{}\n\n", recvBuf);
-                        // adding one because we doing null terminator
                         m_request.addBody(recvBuf, bytesRecv);
                         clbytes -= bytesRecv;
                     } else {
                         break;
                     }
                 }
-                
             }
             // The Main logic to response Client
             m_response.findRouteAndExecute(method, path, m_routes, response, m_request, m_response);

@@ -13,8 +13,8 @@ int main() {
 
     server.Get("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
-
-        // res.setHeader(key, value);
+        res.setHeader("User-Agent", "App/1.0");
+        
         res.sendFile("../html/test.html");
     });
 
