@@ -155,6 +155,6 @@ void Response::setHeader(const std::string& key, const std::string& value) {
 }
 
 void Response::pageNotFound() {
-    setStatus(302);
+    setStatus(301);
     redirect("https://www.youtube.com/?app");
 }

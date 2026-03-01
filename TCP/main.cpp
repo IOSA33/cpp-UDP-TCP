@@ -11,13 +11,32 @@ int main() {
         res.redirect("https://www.youtube.com");
     });
 
-    server.Get("/htmltest", [](Request& req, Response& res) -> void {
+    auto middleware {
+        [](const std::function<void(Request&, Response&)>& next) {
+            return [next](Request& req, Response& res) {
+    
+                // Here we doing some handling
+                // Then we call our main func if our check for something is success
+    
+                // For example
+                if (req.getHeader("Host") == "localhost:6788") {
+                    next(req, res);
+                } else {
+                    std::println("The connection Host is not a localhost:6788!");
+                    res.setStatus(301);
+                    res.redirect("localhost:6788/jsontest");
+                }
+            };
+        }
+    };
+
+    server.Get("/htmltest", middleware([](Request& req, Response& res) -> void {
         res.setStatus(200);
         res.setHeader("User-Agent", "App/1.0");
-        std::println("User-agent is: {}", req.getHeader("User-Agent"));
+        std::println("Host is: {}", req.getHeader("Host"));
         
         res.sendFile("../html/test.html");
-    });
+    }));
 
     server.Post("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(201);
