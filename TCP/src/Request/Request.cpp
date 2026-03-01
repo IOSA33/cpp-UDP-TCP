@@ -18,7 +18,7 @@ void Request::parser(const std::string& req) {
 
     if (it != std::string::npos) {
         
-        std::string_view headers = req.substr(req.find("\r\n") + 2, it);
+        std::string headers = req.substr(req.find("\r\n") + 2, it);
         
         bool valueBool { false };
         std::string key {};

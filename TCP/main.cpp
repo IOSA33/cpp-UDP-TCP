@@ -14,6 +14,7 @@ int main() {
     server.Get("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
         res.setHeader("User-Agent", "App/1.0");
+        std::println("User-agent is: {}", req.getHeader("User-Agent"));
         
         res.sendFile("../html/test.html");
     });
@@ -21,7 +22,6 @@ int main() {
     server.Post("/htmltest", [](Request& req, Response& res) -> void {
         res.setStatus(201);
         std::println("Content-Length is: {}", req.getHeader("Content-Length"));
-
         res.sendFile("../html/htmlPostTest.html");
     });
     
