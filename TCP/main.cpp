@@ -47,7 +47,8 @@ int main() {
     // TODO: add json support    
     server.Get("/jsontest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
-        res.json("../html/test.json");
+        std::string json = R"({"password":"123", "test":"testApi"})";
+        res.json(json);
     });
 
     server.Get("/favicon.ico", [](Request& req, Response& res) -> void {

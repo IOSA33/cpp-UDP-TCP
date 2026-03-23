@@ -65,7 +65,7 @@ void Response::sendFile(const std::string& filePath) {
     if (file_extension == "html"){
         content_type = "text/html";
     } else if (file_extension == "json") {
-        content_type = "application/json";
+        content_type = "application/json; charset=utf-8";
     }
 
     std::string filestring{};
@@ -160,25 +160,21 @@ void Response::pageNotFound() {
     redirect("https://www.youtube.com/?app");
 }
 
-void Response::json(const std::string& path) {
-    if(path.empty()) {
-        std::println("Error in \"Response::json\": Path is Empty!");
+void Response::json(const std::string& content) {
+    if(content.empty()) {
+        std::println("Error in \"Response::json\": Content is Empty!");
         return;
     }
     // Setting the json http header automatically
-    m_response.append("Content-Type: application/json; charset=utf-8\r\n");
+    setHeader("Content-Type", "application/json; charset=utf-8");
 
-    std::ifstream json_file(path);
-    if(!json_file.is_open()) {
-        std::println("Error in \"Response::json\": Cannot open a json file!");
-        return;
+    if (nlohmann::json::accept(content)) {
+        setHeader("Content-Length", std::to_string(content.size()));
+        m_response.append("\r\n");
+        m_response.append(content);
+    } else {
+        std::println("Error in Response::json: Json is not valid: {}\n", content);   
     }
-    nlohmann::json data { nlohmann::json::parse(json_file) };
-    std::string dataString { data.dump() };
-    // Seperating headers and body with double whitespacec
-    m_response.append(std::format("Content-Length: {}\r\n", dataString.size()));    
-    m_response.append("\r\n");
-    m_response.append(dataString);
 }
 
 void Response::end() {
