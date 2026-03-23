@@ -21,9 +21,7 @@ private:
     std::string m_ip{};
     // Method, route, origPath, lambda
     std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>> m_routes;
-    Request m_request{};
-    Response m_response{};
-
+    
 public:
     Server(const std::string& ip, int port) 
         : m_port(port), m_ip(ip) {

@@ -158,3 +158,7 @@ void Response::pageNotFound() {
     setStatus(301);
     redirect("https://www.youtube.com/?app");
 }
+
+void Response::end() {
+    m_response.append("\r\n\r\n");
+}

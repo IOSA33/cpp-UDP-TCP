@@ -81,7 +81,11 @@ int Server::run() {
         int bytesRecv = recv(acceptSocket, recvBuf, recvBuflen - 1, 0);
         if (bytesRecv > 0) {
             recvBuf[bytesRecv] = '\0';
-
+            
+            // Later going to work with threadpool, so every client will have
+            // own res req, cause we prevent data race
+            Request m_request{};
+            Response m_response{};
 
             // Logging for debug and main logic
             std::cout << "\nRecived from client: \n" << recvBuf << std::endl;

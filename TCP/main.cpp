@@ -49,6 +49,13 @@ int main() {
         res.sendFile("../html/test.json");
     });
 
+    // TODO: add json support
+    server.Get("/favicon.ico", [](Request& req, Response& res) -> void {
+        res.setStatus(204);
+        // end() is required function if we dont sent any file to the client
+        res.end();
+    });
+
     int err { server.run() };
     if (err == 1) {
         std::println("Error to Start The Server!");
