@@ -23,6 +23,6 @@ public:
     std::string_view returnResponse() { return m_response; };
     void setHeader(const std::string& key, const std::string& value);
     void pageNotFound();
-    void json();
+    void json(const std::string& path);
     void end();
 };

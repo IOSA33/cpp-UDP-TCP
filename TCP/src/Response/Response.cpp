@@ -7,6 +7,7 @@
 #include <format>
 #include <algorithm>
 #include <stdexcept>
+#include <nlohmann/json.hpp>
 #include "Response.h"
 #include "../Request/Request.h"
 
@@ -159,9 +160,25 @@ void Response::pageNotFound() {
     redirect("https://www.youtube.com/?app");
 }
 
-// TODO
-void Response::json() {
+void Response::json(const std::string& path) {
+    if(path.empty()) {
+        std::println("Error in \"Response::json\": Path is Empty!");
+        return;
+    }
+    // Setting the json http header automatically
+    m_response.append("Content-Type: application/json; charset=utf-8\r\n");
 
+    std::ifstream json_file(path);
+    if(!json_file.is_open()) {
+        std::println("Error in \"Response::json\": Cannot open a json file!");
+        return;
+    }
+    nlohmann::json data { nlohmann::json::parse(json_file) };
+    std::string dataString { data.dump() };
+    // Seperating headers and body with double whitespacec
+    m_response.append(std::format("Content-Length: {}\r\n", dataString.size()));    
+    m_response.append("\r\n");
+    m_response.append(dataString);
 }
 
 void Response::end() {
