@@ -178,5 +178,5 @@ void Response::json(const std::string& content) {
 }
 
 void Response::end() {
-    m_response.append("\r\n\r\n");
+    m_response.append("\r\n");
 }
