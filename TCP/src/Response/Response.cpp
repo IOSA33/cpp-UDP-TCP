@@ -159,6 +159,11 @@ void Response::pageNotFound() {
     redirect("https://www.youtube.com/?app");
 }
 
+// TODO
+void Response::json() {
+
+}
+
 void Response::end() {
     m_response.append("\r\n\r\n");
 }

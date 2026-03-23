@@ -44,13 +44,13 @@ int main() {
         res.sendFile("../html/htmlPostTest.html");
     });
     
+    // TODO: add json support    
     server.Get("/jsontest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.sendFile("../html/test.json");
     });
 
-    // TODO: add json support
     server.Get("/favicon.ico", [](Request& req, Response& res) -> void {
         res.setStatus(204);
         // end() is required function if we dont sent any file to the client
