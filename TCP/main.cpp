@@ -46,6 +46,7 @@ int main() {
     
     server.Get("/jsontest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.sendFile("../html/test.json");
     });
 
