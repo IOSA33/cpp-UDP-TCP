@@ -44,7 +44,6 @@ int main() {
         res.sendFile("../html/htmlPostTest.html");
     });
     
-    // TODO: add json support    
     server.Get("/jsontest", [](Request& req, Response& res) -> void {
         res.setStatus(200);
         std::string json = R"({"password":"123", "test":"testApi"})";
