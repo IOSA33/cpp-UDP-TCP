@@ -1,17 +1,19 @@
-# TCP - HTTPS Library over TLS handshake for your Use
-- Using TLS handshake for secure connection
-- Using wepoll
-- Works currently on WinSock2
-- Custom functions
-- Sending HTML files to the client
-- Checking for cookies and Authentication
+# HTTPS Library over TLS handshake for your Use
+- Using OpenSSL for TLS handshake secure connection
+- Using wepoll and threadpool for handling over 100k concurrent connections
+- Works currently only on WinSock2
+- You can create custom middleware functions
+- Sending for example HTML files to the client
+- Recieve and send json
+- Set headers and body for response
+- Different USE middlewares
 
 # How to Start
 ```
 cd TCP
 mkdir build
 cd build
-cmake ...
+cmake ..
 ninja
 ./app.exe
 ```
