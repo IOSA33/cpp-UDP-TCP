@@ -41,7 +41,7 @@ int main() {
         res.sendFile("../html/test.html");
     }));
 
-    server.Post("/html", [](Request& req, Response& res) -> void {
+    server.Post("/mainpage", [](Request& req, Response& res) -> void {
         res.setStatus(201);
         std::println("Content-Length is: {}", req.getHeader("Content-Length"));
         // Path is coming from the "build" folder
@@ -55,7 +55,7 @@ int main() {
     });
 
     server.Get("/favicon.ico", [](Request& req, Response& res) -> void {
-        res.setStatus(204);
+        res.setStatus(404);
         // end() is required function if we dont sent any data to the client
         res.end();
     });
