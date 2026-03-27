@@ -10,7 +10,6 @@
 
 # How to Start
 ```
-cd TCP
 mkdir build
 cd build
 cmake ..
