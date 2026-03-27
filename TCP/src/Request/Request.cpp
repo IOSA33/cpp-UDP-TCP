@@ -78,21 +78,6 @@ void Request::addBody(const std::string& req) {
     }
 }
 
-// will use it for example url/body/page/{1}/
-// about/example  :  {"abour", "example"}
-void Request::splitURL(const std::string& url) {
-    std::string token{};
-
-    for (const auto& i: url) {
-        if (i == '/') {
-            m_vec_path.push_back(token);
-            token.clear();
-        } else {
-            token.push_back(i);
-        }
-    }
-}
-
 const std::string& Request::getPath(const std::string_view buf) {
     m_path.reserve(16);
     // We know that http path is always second, so we do thr check for whitespacec
