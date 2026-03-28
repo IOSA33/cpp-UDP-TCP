@@ -98,9 +98,9 @@ const std::string& Request::getPath(const std::string_view buf) {
 }
 
 const std::string& Request::getMethod(const std::string_view buf) {
-    m_method.reserve(6);
+    m_method.reserve(12);
     // Longest method is 6 chars so we prevent from checking whole buf
-    for (int i { 0 }; i < 5; ++i) {
+    for (int i { 0 }; i < 12; ++i) {
         if (buf[i] == ' ') break;
         
         m_method += buf[i];
