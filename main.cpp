@@ -55,8 +55,8 @@ int main() {
         res.json(json);
     });
 
-    // TODO: cros origin R"(.*)"
-    server.Options("/mainpage", [](Request& req, Response& res) -> void {
+    // TODO: cros origin R"(/*)"
+    server.Options(R"(/*)", [](Request& req, Response& res) -> void {
         res.setStatus(204);
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");

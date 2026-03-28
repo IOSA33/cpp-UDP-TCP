@@ -23,11 +23,21 @@ void Response::findRouteAndExecute(
     auto method_it { routes.find(method) };
 
     if (method_it != routes.end()) {
+        // This is for Options that if user defiened every R"(/*)"
+        if (method == "OPTIONS") {
+            auto tryFindDot_it { method_it->second.find(R"(/*)") };
+            if (tryFindDot_it != method_it->second.end()) {
+                tryFindDot_it->second.second(request, response);
+                responseToClient = response.returnResponse();
+                return;
+            }
+        }
+
         auto path_it { method_it->second.find(path) };
         if (path_it != method_it->second.end()) {
             path_it->second.second(request, response);
             responseToClient = response.returnResponse();
-            return;        
+            return;
         }
         std::println("No such Route!");
     }
