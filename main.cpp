@@ -65,7 +65,7 @@ int main() {
     });
 
     server.Get("/favicon.ico", [](Request& req, Response& res) -> void {
-        res.setStatus(404);
+        res.setStatus(204);
         // end() is required function if we dont sent any data to the client
         res.end();
     });

@@ -20,6 +20,8 @@ void Response::findRouteAndExecute(
         Response& response
     ) {
 
+    request.parseBody();
+
     auto method_it { routes.find(method) };
 
     if (method_it != routes.end()) {

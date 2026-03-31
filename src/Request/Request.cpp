@@ -49,13 +49,7 @@ void Request::parser(const std::string& req) {
         auto duration {std::chrono::duration<double, std::milli>(end - start)};
         std::println("Time used: {}", duration);
 
-        const auto body_it { req.substr(it + 4) };
-        m_received_data_size = body_it.size();
-
-        if (m_received_data_size > 0) {
-            const auto it { body_it.find("=") };
-            m_body.insert({body_it.substr(0, it), body_it.substr(it + 1)});
-        }
+        m_body_string.append(req, it + 4, std::string::npos);
 
     } else {
         std::println("Request::parser, Didn't found any body!");
@@ -67,14 +61,9 @@ void Request::parser(const std::string& req) {
 
 void Request::addBody(const std::string& req) {
     if (!req.empty()) {
-        const auto it { req.find("=") };
-        m_body.insert({req.substr(0, it), req.substr(it + 1)});
+        m_body_string.append(req);
     } else {
         std::println("Request::addBody, req is empty!");
-    }
-
-    for(const auto& i: m_body) {
-        std::cout << i.first << " = " << i.second << '\n';
     }
 }
 
@@ -117,4 +106,8 @@ std::string Request::getHeader(const std::string& headerToFind) const {
     }
 
     return "";
+}
+
+void Request::parseBody() {
+    // m_body_string
 }

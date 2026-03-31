@@ -12,6 +12,7 @@
 #include <utility>
 #include <csignal>
 #include <thread>
+#include <chrono>
 
 #pragma comment (lib, "ws2_32.lib");
 // HTTP server in c++, I did my own custom implementation
@@ -68,7 +69,7 @@ int Server::run() {
 
     std::signal(SIGINT, signal_handler);
     std::thread closeServerClientSOCK([&in, this](){
-        while(glocal_isRunning);
+        while(glocal_isRunning) std::this_thread::sleep_for(std::chrono::seconds(1));
         closesocket(in);
         if (m_clientSocket != INVALID_SOCKET) {
             closesocket(m_clientSocket);
