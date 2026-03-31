@@ -6,6 +6,7 @@
 #include <chrono>
 #include <iostream>
 #include <string_view>
+#include <nlohmann/json.hpp>
 
 void Request::parser(const std::string& req) {
     auto start { std::chrono::steady_clock::now() };
@@ -67,7 +68,7 @@ void Request::addBody(const std::string& req) {
     }
 }
 
-const std::string& Request::getPath(const std::string_view buf) {
+const std::string& Request::getPath(std::string_view buf) {
     m_path.reserve(16);
     // We know that http path is always second, so we do thr check for whitespacec
     short whitespaceAppear{ 0 };
@@ -86,7 +87,7 @@ const std::string& Request::getPath(const std::string_view buf) {
     return m_path;
 }
 
-const std::string& Request::getMethod(const std::string_view buf) {
+const std::string& Request::getMethod(std::string_view buf) {
     m_method.reserve(12);
     // Longest method is 6 chars so we prevent from checking whole buf
     for (int i { 0 }; i < 12; ++i) {
@@ -109,5 +110,32 @@ std::string Request::getHeader(const std::string& headerToFind) const {
 }
 
 void Request::parseBody() {
-    // m_body_string
+    if(!m_body_string.empty()) {
+        if(nlohmann::json::accept(m_body_string)) {
+            m_body_json = nlohmann::json::parse(m_body_string);
+        } else {
+            m_body_json = nlohmann::json::object();
+            // TODO: parse normal string
+        }
+    }
+}
+
+std::string Request::getBody(std::string_view key) const {
+    if (!m_body_json.empty()) {
+        if (m_body_json.contains(key)) {
+            if (m_body_json.is_primitive()) {
+                // TODO: do somthing different
+                return m_body_json[key].dump();
+            } else if (m_body_json.is_structured()) {
+                // TODO: Needs to do something different 
+                return m_body_json[key].dump();
+            }
+        }
+    }
+
+    if (!m_body.empty()) {
+        // TODO: get normal string
+    }
+    
+    return "";
 }

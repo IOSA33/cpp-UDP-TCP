@@ -13,12 +13,14 @@
 #include <csignal>
 #include <thread>
 #include <chrono>
+#include <condition_variable>
 
 #pragma comment (lib, "ws2_32.lib");
 // HTTP server in c++, I did my own custom implementation
 
 // Local globals and Declarations
 static bool glocal_isRunning{ true };
+std::condition_variable glocal_cv{};
 void signal_handler(int signal);
 
 // To compile  "g++ server.cpp -lws2_32 -o server"
@@ -69,7 +71,8 @@ int Server::run() {
 
     std::signal(SIGINT, signal_handler);
     std::thread closeServerClientSOCK([&in, this](){
-        while(glocal_isRunning) std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::unique_lock<std::mutex> lock(m_mutex);
+        glocal_cv.wait(lock, []{ return !glocal_isRunning; });
         closesocket(in);
         if (m_clientSocket != INVALID_SOCKET) {
             closesocket(m_clientSocket);
@@ -144,7 +147,6 @@ int Server::run() {
             
             // App Logic completes here 
 
-
             int bytes_sent = send(m_clientSocket, response.c_str(), response.size(), 0);
             closesocket(m_clientSocket);
 
@@ -196,6 +198,7 @@ void Server::Use(const std::string& path, const std::function<void(Request&, Res
 void signal_handler(int signal) {
     if (signal == SIGINT) {
         glocal_isRunning = false;
+        glocal_cv.notify_all();
     }
 }
 

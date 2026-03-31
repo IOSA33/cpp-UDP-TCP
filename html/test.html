@@ -15,5 +15,12 @@
         <br>
         <button type="submit">Enter</button>
     </form>
+    <button onclick="fetch('/mainpage', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({hello: 'myname'})
+    })">
+    Send Json Test
+    </button>
 </body>
 </html>

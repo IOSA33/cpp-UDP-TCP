@@ -6,6 +6,7 @@
 #include <print>
 #include <utility>
 #include <winsock2.h>
+#include <mutex>
 #include "Request/Request.h"
 #include "Response/Response.h"
 
@@ -21,6 +22,7 @@ private:
     int m_port{};
     std::string m_ip{};
     SOCKET m_clientSocket{};
+    std::mutex m_mutex{};
     // Method, route, origPath, lambda
     std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>> m_routes;
     

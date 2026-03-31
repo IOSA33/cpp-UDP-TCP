@@ -43,6 +43,7 @@ int main() {
 
     server.Post("/mainpage", [](Request& req, Response& res) -> void {
         res.setStatus(201);
+        std::println("{}", req.getBody("hello"));
         res.setHeader("Access-Control-Allow-Origin", "*");
         std::println("Content-Length is: {}", req.getHeader("Content-Length"));
         // Path is coming from the "build" folder
