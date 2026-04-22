@@ -18,6 +18,7 @@ public:
     void findRouteAndExecute(const std::string& method, const std::string& path, const std::map<std::string, std::map<std::string, std::pair<std::string, std::function<void(Request&, Response&)>>>>& routes, std::string& responseToClient, Request& request, Response& response);
     void sendFile(const std::string& filePath);
     void readFile(std::string& file, const std::string& filePath);
+    std::string readFileFast(const std::string& filePath);
     void redirect(std::string_view url);
     void setStatus(int code);
     std::string_view returnResponse() { return m_response; };

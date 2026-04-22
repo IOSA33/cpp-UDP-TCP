@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <print>
+#include <chrono>
 #include <format>
 #include <algorithm>
 #include <nlohmann/json.hpp>
@@ -60,6 +61,7 @@ void Response::findRouteAndExecute(
 }
 
 void Response::sendFile(const std::string& filePath) {
+    auto start { std::chrono::steady_clock::now() };
     std::string content_type {};
  
     size_t lastDot = filePath.find_last_of('.');
@@ -78,8 +80,8 @@ void Response::sendFile(const std::string& filePath) {
         content_type = "application/json; charset=utf-8";
     }
 
-    std::string filestring{};
-    readFile(filestring, filePath);    
+    std::string filestring{ readFileFast(filePath) };
+    // readFile(filestring, filePath);    
 
     // C++20
     setHeader("Content-Type", content_type);
@@ -87,6 +89,10 @@ void Response::sendFile(const std::string& filePath) {
     m_response.append("\r\n");
 
     m_response.append(filestring);
+
+    auto end { std::chrono::steady_clock::now() };
+    auto duration {std::chrono::duration<double, std::milli>(end - start)};
+    std::println("Time used TO READ FILE request: {}", duration);
 }
 
 void Response::readFile(std::string& file, const std::string& filePath) {
@@ -105,6 +111,27 @@ void Response::readFile(std::string& file, const std::string& filePath) {
 
     myFile.close();
 }
+
+std::string Response::readFileFast(const std::string& filePath) {
+    std::ifstream myFile { filePath, std::ifstream::binary };
+    if (myFile) {
+        myFile.seekg(0, myFile.end);
+        std::streamsize length = myFile.tellg();
+        myFile.seekg (0, myFile.beg);
+
+        std::string buffer(length, '\0');
+        myFile.read(&buffer[0], length);
+
+        if (!myFile)
+            std::cout << "error: only " << myFile.gcount() << " could be read";
+        
+        myFile.close();
+
+        return buffer;
+    }
+    return "";
+}
+
 
 void Response::redirect(std::string_view url) {
     m_response.append(std::format("Location: {} \r\n", url));
