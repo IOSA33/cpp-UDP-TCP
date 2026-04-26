@@ -21,44 +21,31 @@ static bool glocal_isRunning{ true };
 std::condition_variable glocal_cv{};
 void signal_handler(int signal);
 
-// To compile  "g++ server.cpp -lws2_32 -o server"
 int Server::run() {
-    // Linking DLL
-    // Starting WinSock
+    
     WSADATA wsadata;
     if (WSAStartup(MAKEWORD(2,2), &wsadata) != 0) {
         std::cout << "Winsock dll not found" << std::endl;
         return 1;
-    } else {
-        // std::cout << "winsock DLL Found" << std::endl;
-        // std::cout << "Status: " << wsadata.szSystemStatus << std::endl;
     }
 
-    // Creating a socket
     SOCKET in = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (in == INVALID_SOCKET) {
         std::cout << "Error at socket()" << WSAGetLastError() << std::endl;
         WSACleanup();
         return 1;
-    } else {
-        // std::cout << "Socket is OK" << std::endl;
     }
 
-    // SOCKADDR_IN is local endpoint address to 
-    // which connect a socket
     sockaddr_in addr;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(m_port);
     addr.sin_addr.S_un.S_addr = ADDR_ANY;
 
-    // Binding the socket for the server
-    // If bind is okay return 0, else SOCKET_ERROR
     if (bind(in, (sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
         std::cout << "Can't bind socket! " << WSAGetLastError() << std::endl;
 		return 1;
     }
 
-    // Listen on port TCP
     if (listen(in, SOMAXCONN) == SOCKET_ERROR) {
         std::cout << "error in listen() : " << WSAGetLastError() << std::endl;
     } else {
@@ -167,7 +154,6 @@ int Server::run() {
     }
 
     std::println("Graceful Shotdown!");
-    // Terminating a Winsock2 dll
     WSACleanup();
     return 0;
 }
