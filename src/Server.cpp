@@ -85,7 +85,9 @@ int Server::run() {
 
         int bytesRecv = recv(m_clientSocket, recvBuf, recvBuflen - 1, 0);
         if (bytesRecv > 0) {
+            
             auto start { std::chrono::steady_clock::now() };
+            
             recvBuf[bytesRecv] = '\0';
             
             // Later going to work with threadpool, so every client will have
@@ -135,7 +137,12 @@ int Server::run() {
             // App Logic completes here 
 
             int bytes_sent = send(m_clientSocket, response.c_str(), response.size(), 0);
+            
             closesocket(m_clientSocket);
+
+            auto end { std::chrono::steady_clock::now() };
+            auto duration {std::chrono::duration<double, std::milli>(end - start)};
+            std::println("Time used WHOLE request: {}", duration);
 
             if (bytes_sent == SOCKET_ERROR) {
                 // If sending fails, print an error
@@ -145,10 +152,6 @@ int Server::run() {
                 std::cout << "Sent " << bytes_sent << " bytes to client." << std::endl;
             }
             std::println("Connection Closed!");
-
-            auto end { std::chrono::steady_clock::now() };
-            auto duration {std::chrono::duration<double, std::milli>(end - start)};
-            std::println("Time used WHOLE request: {}", duration);
             
         } else {
             // If no data is received, print an error message

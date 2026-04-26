@@ -61,7 +61,6 @@ void Response::findRouteAndExecute(
 }
 
 void Response::sendFile(const std::string& filePath) {
-    auto start { std::chrono::steady_clock::now() };
     std::string content_type {};
  
     size_t lastDot = filePath.find_last_of('.');
@@ -89,10 +88,6 @@ void Response::sendFile(const std::string& filePath) {
     m_response.append("\r\n");
 
     m_response.append(filestring);
-
-    auto end { std::chrono::steady_clock::now() };
-    auto duration {std::chrono::duration<double, std::milli>(end - start)};
-    std::println("Time used TO READ FILE request: {}", duration);
 }
 
 void Response::readFile(std::string& file, const std::string& filePath) {
